@@ -1,0 +1,722 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 94,
+   "id": "ef0295db-971c-476c-ab47-9bb389a784d6",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from optionprice import Option\n",
+    "import yfinance as yf\n",
+    "import pandas as pd\n",
+    "import numpy as np"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "02537b83-7cd2-4f2c-a1ae-722297dad811",
+   "metadata": {},
+   "source": [
+    "### Primas Base"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 95,
+   "id": "dffdd120-353b-447b-adb0-e332ff10119b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "39239.23616386102"
+      ]
+     },
+     "execution_count": 95,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Prima de la opcion (CALL) en USD\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 96,
+   "id": "8fdfdae8-6209-46ae-97b9-444ceb99a591",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "25565.24150181146"
+      ]
+     },
+     "execution_count": 96,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Prima de la opcion (PUT) en USD\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a895d80c-3c6e-4f4a-afdf-0cfa5cbd13db",
+   "metadata": {},
+   "source": [
+    "### Delta"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 97,
+   "id": "aeb7c129-ceaf-43c5-972e-9050774beb48",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "25637.132947071143"
+      ]
+     },
+     "execution_count": 97,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot cae)\n",
+    "### Delta CALL\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0-100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 98,
+   "id": "484fd9f3-998d-4682-a662-a2216101268f",
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "56143.40404301108"
+      ]
+     },
+     "execution_count": 98,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot sube)\n",
+    "### Delta CALL\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0+100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 99,
+   "id": "d9043676-b450-4db2-9b54-e1216ad933e0",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "38188.51853702855"
+      ]
+     },
+     "execution_count": 99,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot cae)\n",
+    "### Delta PUT\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0-100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 100,
+   "id": "31f5c88c-dedc-4dc5-90ba-904ea872dc5f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "16244.029128954398"
+      ]
+     },
+     "execution_count": 100,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot sube)\n",
+    "### Delta PUT\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0+100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "ddb16f3e-c9f2-46d4-8a18-bbb126c2aef7",
+   "metadata": {},
+   "source": [
+    "### Gamma"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 101,
+   "id": "4d7a0b40-183f-4e21-8533-bed59e6ab558",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4.115766898125983e-121"
+      ]
+     },
+     "execution_count": 101,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot cae)\n",
+    "### Gamma CALL\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=25637-100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 102,
+   "id": "5f92feb4-02e4-420a-b0c8-dd0bc6157f28",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "4.319577654214338e-243"
+      ]
+     },
+     "execution_count": 102,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot sube)\n",
+    "### Gamma CALL\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=56143+100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "id": "e9de654b-cb05-4e09-9e32-9065889e5014",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1.1101963907721864e-177"
+      ]
+     },
+     "execution_count": 62,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot cae)\n",
+    "### Gamma PUT\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=38188-100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 63,
+   "id": "e4dd224f-5093-4f20-90fb-85b07db96928",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1.5766287922693527e-70"
+      ]
+     },
+     "execution_count": 63,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Sensibilidad del precio de la opción ante cambios en el precio del activo subyacente (spot sube)\n",
+    "### Gamma PUT\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=16244+100, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "95b8f167-5cec-4250-ae0b-d93c4d4a364b",
+   "metadata": {},
+   "source": [
+    "### Theta"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "5a78b94e-0e70-40f2-9db4-6d2e1691978c",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "49664.64783445793"
+      ]
+     },
+     "execution_count": 73,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Pérdida de valor de una opción debido al paso del tiempo (aumenta)\n",
+    "### CALL\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.1225, sigma=std_anual, t=120)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 74,
+   "id": "de2e2ff7-ce23-4ac1-aba5-ec9970aee9ba",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "28098.530838791692"
+      ]
+     },
+     "execution_count": 74,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Pérdida de valor de una opción debido al paso del tiempo (disminuye)\n",
+    "### CALL\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.1225, sigma=std_anual, t=60)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "id": "52147da2-2281-41b6-9145-65265a286967",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "26109.66335573684"
+      ]
+     },
+     "execution_count": 75,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Pérdida de valor de una opción debido al paso del tiempo (aumenta)\n",
+    "### PUT\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.1225, sigma=std_anual, t=120)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "b879b56e-792f-4a38-ab0a-c606ce81e4cf",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "24405.5151973165"
+      ]
+     },
+     "execution_count": 76,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Pérdida de valor de una opción debido al paso del tiempo (disminuye)\n",
+    "### PUT\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.1225, sigma=std_anual, t=60)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "28b10d7f-57b2-47e4-aa19-5e41d442f94b",
+   "metadata": {},
+   "source": [
+    "### Vega"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 80,
+   "id": "bd0c4d5b-a9c6-45ff-b65a-efd2c8cf166b",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "42658.35859942696"
+      ]
+     },
+     "execution_count": 80,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Derivada del precio de la opcion respecto a la volatilidad del activo subyacente (sube la DE)\n",
+    "### (CALL)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.18\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 81,
+   "id": "a0c7521d-f23b-49dd-995d-060bc8d74216",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "34913.974179268516"
+      ]
+     },
+     "execution_count": 81,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Derivada del precio de la opcion respecto a la volatilidad del activo subyacente (baja la DE)\n",
+    "### (CALL)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.14\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 82,
+   "id": "a2fb90b6-0344-4a68-9adc-f45365a3f51d",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "28984.363937377217"
+      ]
+     },
+     "execution_count": 82,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Derivada del precio de la opcion respecto a la volatilidad del activo subyacente (sube la DE)\n",
+    "### (PUT)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.18\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 83,
+   "id": "f70f6cc0-e764-4b02-89a9-847f7b250e2e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "21239.979517218777"
+      ]
+     },
+     "execution_count": 83,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Derivada del precio de la opcion respecto a la volatilidad del activo subyacente (baja la DE)\n",
+    "### (PUT)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.14\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.1225, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "95a6c7ec-56bc-4be9-8aa5-c349911ae736",
+   "metadata": {},
+   "source": [
+    "### Rho"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 89,
+   "id": "d1ac44c2-49f6-4113-ae76-ef01ff857d1f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "40253.22958656101"
+      ]
+     },
+     "execution_count": 89,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Cambio que sufre el valor de la opción cuando se mueven los tipos de interés (r sube)\n",
+    "### (CALL)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.13, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 90,
+   "id": "7203b02a-ffff-41a9-9cf2-a9be630e298e",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "37581.93472169659"
+      ]
+     },
+     "execution_count": 90,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Cambio que sufre el valor de la opción cuando se mueven los tipos de interés (r baja)\n",
+    "### (CALL)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "call_usdcop=Option(european=True, kind='call', s0=s0, k=k, r=0.11, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "call_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 91,
+   "id": "1e8351b8-91e3-4a7d-b599-1453f8e68eac",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "24756.892941999486"
+      ]
+     },
+     "execution_count": 91,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Cambio que sufre el valor de la opción cuando se mueven los tipos de interés (r baja)\n",
+    "### (PUT)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.13, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 92,
+   "id": "4e9a0bff-f8fa-4b90-bcee-0b8103867266",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "26952.675785833817"
+      ]
+     },
+     "execution_count": 92,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "### Cambio que sufre el valor de la opción cuando se mueven los tipos de interés (r sube)\n",
+    "### (PUT)\n",
+    "\n",
+    "s0=3813.10009765625\n",
+    "k=3876.29448185408\n",
+    "std_anual=0.16237521349391962\n",
+    "\n",
+    "put_usdcop=Option(european=True, kind='put', s0=s0, k=k, r=0.11, sigma=std_anual, t=90)\n",
+    "nominal=1000000\n",
+    "put_usdcop.getPrice()*nominal/s0"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "b11f8151-e411-4252-be73-13be2a552618",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
